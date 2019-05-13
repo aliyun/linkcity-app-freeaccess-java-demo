@@ -1,0 +1,43 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: utf-8
+  context-path: /
+
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    encoding: UTF-8
+    content-type: text/html
+    cache: false
+    # mode: HTML5, LEGACYHTML5会关闭对HTML标记闭合的检查
+    mode: LEGACYHTML5
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+# 热部署,还需将IDEA的compile的auto make设置为true
+  devtools:
+    restart:
+      enabled: true
+  mvc:
+    dispatch-options-request: true
+
+logging:
+  level:
+    com.aliyun: debug
+
+# iot SDK 配置
+app:
+  id: xxxxxxx
+  appkey: xxxxxxx
+  appsecret: xxxxxxx
+  redirectUrlTemplate: http://xxxxxxx/api/tac/authorize?responseType=code&clientId={0}&state={1}&redirectUrl={2}
+  logoutRedirectUrl: http://xxxxxxx/login/login.htm
+  grantType: authorization_code
+  host: xxxxxxx
+  role:
+    admin: ADMIN
+    normal: NORMAL
+  apiVersion:
+    device: 0.2.0

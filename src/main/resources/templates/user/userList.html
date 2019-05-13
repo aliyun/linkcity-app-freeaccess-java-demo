@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap-clearmin.min.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/roboto.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/material-design.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/small-n-flat.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}">
+        <title>Clearmin template</title>
+    </head>
+    <body class="cm-no-transition cm-2-navbar">
+        <!-- 菜单 -->
+        <div th:replace="common/menu :: menu"></div>
+        <header th:replace="common/header :: header"></header>
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">用户列表</div>
+                            <div class="modal-header">
+                                <form class="form-horizontal">
+                                    <div class="form-group" id="queryCriteria">
+                                        <label class="col-sm-1 control-label">用户名</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" class="form-control" name="name">
+                                        </div>
+
+                                        <label class="col-sm-1 control-label">年龄</label>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control" name="age_min">
+                                        </div>
+                                        <div class="col-sm-1" style="width: 30px;">
+                                            <span>~</span>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <input type="text" class="form-control" name="age_max">
+                                        </div>
+                                        <div class="col-sm-1"></div>
+                                        <div class="col-sm-2">
+                                            <button type="button" onclick="search()" class="btn btn-primary">查询</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="panel-body">
+                                <table id="userListTable" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>用户名</th>
+                                            <th>年龄</th>
+                                            <th>邮件</th>
+                                            <th>生日</th>
+                                            <th>创建时间</th>
+                                            <th>更新时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" onclick="addUser()" class="btn btn-primary">创建用户</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 更新对话框 -->
+            <div th:replace="user/userDialog :: updateDialog"></div>
+            <div th:replace="user/userDialog :: userRoleDialog"></div>
+            <footer th:replace="common/footer :: footer"></footer>
+        </div>
+        <script th:src="@{/js/lib/jquery-2.1.3.min.js}"></script>
+        <script th:src="@{/js/jquery.mousewheel.min.js}"></script>
+        <script th:src="@{/js/jquery.cookie.min.js}"></script>
+        <script th:src="@{/js/fastclick.min.js}"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/clearmin.min.js}"></script>
+
+        <script>
+            $(function(){
+                // 第一次加载用户
+                search();
+
+                $("#confirmEdit").click(function () {
+                    var editType =  $("#editType").val();
+                    var url = "";
+                    if ("add" == editType) {
+                        url = "/user/add";
+                    } else {
+                        url = "/user/update";
+                    }
+                    var uid = $("#userDialog #uid").val();
+                    var name = $("#userDialog #name").val();
+                    var password = $("#userDialog #password").val();
+                    var email = $("#userDialog #email").val();
+                    var age = $("#userDialog #age").val();
+                    var birthday = $("#userDialog #birthday").val();
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        dataType: "json",
+                        data: {
+                            "uid": uid,
+                            "name": name,
+                            "password": password,
+                            "email": email,
+                            "age": age,
+                            "birthday": birthday
+                        },
+                        success: function(data){
+                            $('#userDialog').modal('hide');
+
+                            search();
+                        },
+                        error: function () {
+                            alert("修改失败");
+                        }
+                    });
+                });
+            });
+
+            /**
+             * 获取用户列表
+             */
+            function search() {
+                var conditions = new Array();
+
+                var nameConditionMap = new Object();
+                var name = $("#queryCriteria input[name='name']").val();
+                if (null != name && "" != name) {
+                    nameConditionMap['fieldName'] = "name";
+                    nameConditionMap['operate'] = "eq";
+                    nameConditionMap['value'] = name;
+                    conditions.push(nameConditionMap);
+                }
+
+                var ageConditionMap = new Object();
+                var maxAge = $("#queryCriteria input[name='age_max']").val();
+                var minAge = $("#queryCriteria input[name='age_min']").val();
+                ageConditionMap['fieldName'] = "age";
+                if (maxAge && minAge) {
+                    ageConditionMap['operate'] = "bt";
+                    ageConditionMap['value'] = minAge;
+                    ageConditionMap['value2'] = maxAge;
+                    conditions.push(ageConditionMap);
+                } else if (minAge) {
+                    ageConditionMap['operate'] = "mteq";
+                    ageConditionMap['value'] = minAge;
+                    conditions.push(ageConditionMap);
+                } else if (maxAge) {
+                    ageConditionMap['operate'] = "lteq";
+                    ageConditionMap['value'] = maxAge;
+                    conditions.push(ageConditionMap);
+                }
+
+                var data = new Object();
+                if (conditions.length > 0) {
+                    var json = JSON.stringify(conditions);
+                    data['conditionJson'] = json;
+                }
+
+                console.log(json);
+                $.ajax({
+                    type: "POST",
+                    url: "/user/list",
+                    dataType: "html",
+                    data: data,
+                    success: function(data){
+                        console.log(data);
+                        var html = $(data).find("tbody:eq(0)").html();
+                        $("#userListTable tbody").html(html);
+                    },
+                    error: function () {
+                        alert("用户数据获取失败");
+                    }
+                });
+            }
+            /**
+             * 添加用户按钮点击
+             */
+            function addUser() {
+                $("#editType").val("add");
+                $('#userDialog').modal();
+            }
+            /**
+             * 更新用户按钮点击
+             */
+            function updateUser(uid) {
+                $("#editType").val("update");
+
+                $.ajax({
+                    type: "GET",
+                    url: "/user/get",
+                    dataType: "json",
+                    data: {
+                        "uid": uid
+                    },
+                    success: function(data){
+                        console.log(data);
+                        $("#userDialog #uid").val(data['uid']);
+                        $("#userDialog #name").val(data['name']);
+                        $("#userDialog #password").val(data['password']);
+                        $("#userDialog #email").val(data['email']);
+                        $("#userDialog #age").val(data['age']);
+                        $("#userDialog #birthday").val(data['birthday']);
+
+                        $('#userDialog').modal();
+                    },
+                    error: function () {
+                        alert("用户数据获取失败");
+                    }
+                });
+            }
+
+            /**
+             * 授权按钮点击
+             */
+            function viewRoles(uid) {
+                $.ajax({
+                    type: "GET",
+                    url: "/user/roles",
+                    dataType: "json",
+                    data: {
+                        "uid": uid
+                    },
+                    success: function(data){
+                        console.log(data);
+                        if (data) {
+                            $("#userRoleDialog #userRoles").html("");
+                            var allRoles = data['all'];
+                            var authedRoles = data['authed'];
+                            var roleHtml = "";
+                            for (var i in allRoles) {
+                                roleHtml += "<div class='col-sm-3'><div class='checkbox'><label>";
+                                var role = allRoles[i];
+                                var checked = "";
+                                for (var j in authedRoles) {
+                                    if (authedRoles[j].rid == role.rid) {
+                                        checked = "checked";
+                                        break;
+                                    }
+                                }
+                                var inputHtml = "<input id='" + role.rid + "' type='checkbox' onclick=\"checkRole(\'" + role.rid + "\',\'" + uid + "\')\"" + checked + ">" + role.name
+                                roleHtml += inputHtml;
+                                roleHtml += "</label></div></div>";
+                            }
+                            $("#userRoleDialog #userRoles").html(roleHtml);
+                        }
+
+                        $('#userRoleDialog').modal();
+                    },
+                    error: function () {
+                        alert("角色数据获取失败");
+                    }
+                });
+            }
+
+            function checkRole(rid, uid) {
+                console.log(rid);
+                var checked = $("#" + rid).is(':checked');
+                var path = "";
+                if (checked) {
+                    path = "/user/auth";
+                } else {
+                    path = "/user/revoke";
+                }
+                $.ajax({
+                    type: "POST",
+                    url: path,
+                    dataType: "json",
+                    data: {
+                        "rid": rid,
+                        "uid": uid
+                    },
+                    success: function(data){
+                        console.log(data);
+                    },
+                    error: function () {
+                        alert("用户授权失败");
+                    }
+                });
+            }
+
+            /**
+             * 删除用户按钮点击
+             */
+            function deleteUser(uid) {
+                $.ajax({
+                    type: "GET",
+                    url: "/user/del",
+                    dataType: "json",
+                    data: {
+                        "uid": uid
+                    },
+                    success: function(data){
+                        console.log(data);
+                        search();
+                    },
+                    error: function () {
+                        alert("用户删除失败");
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

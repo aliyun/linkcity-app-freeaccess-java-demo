@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+    <body class="cm-no-transition cm-2-navbar">
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr th:each="user:${users}">
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.age}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${#dates.format(user.birthday, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(user.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(user.lastupdate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <!-- /*
+                        <button type="button" th:onclick="'javascript:update(' + ${user.uid} + ');'" class="btn btn-default">更新</button>
+                        */ -->
+                        <button type="button" th:onclick="'javascript:updateUser(\'' + ${user.uid} + '\');'" class="btn btn-default">更新</button>
+                        <button type="button" th:onclick="'javascript:deleteUser(\'' + ${user.uid} + '\');'" class="btn btn-primary">删除</button>
+                        <button type="button" th:onclick="'javascript:viewRoles(\'' + ${user.uid} + '\');'" class="btn btn-primary">授权</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

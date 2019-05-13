@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap-clearmin.min.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/roboto.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/material-design.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/small-n-flat.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}">
+        <title>Clearmin template</title>
+    </head>
+    <body class="cm-no-transition cm-2-navbar">
+        <!-- 菜单 -->
+        <div th:replace="common/menu :: menu"></div>
+        <header th:replace="common/header :: header"></header>
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">设备列表</div>
+                            <div class="panel-body">
+                                <table id="userListTable" class="table table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>序号</th>
+                                            <th>产品名称</th>
+                                            <th>产品创建时间</th>
+                                            <th>设备名称</th>
+                                            <th>类型</th>
+                                            <th>设备创建时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="deviceInfo,deviceInfoStat:${deviceInfos}">
+                                            <td th:text="${deviceInfoStat.index}"></td>
+                                            <td th:text="${deviceInfo.productDTO.name}"></td>
+                                            <td th:text="${#dates.format(deviceInfo.productDTO.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                            <td th:text="${deviceInfo.deviceDTO.name}"></td>
+                                            <td th:text="${deviceInfo.deviceDTO.thingType == 'DEVICE' ? '设备' : '网关'}"></td>
+                                            <td th:text="${#dates.format(deviceInfo.deviceDTO.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                                            <td>
+                                                <a th:href="@{'/device/detail/' + ${deviceInfo.productDTO.productKey} + '/' + ${deviceInfo.deviceDTO.name}}" class="btn btn-primary btn-xs">详情</a>
+                                                <a th:href="@{'/device/monitor/' + ${deviceInfo.productDTO.productKey} + '/' + ${deviceInfo.deviceDTO.name}}" class="btn btn-primary btn-xs">监控(轮询)</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="common/footer :: footer"></footer>
+        </div>
+        <script th:src="@{/js/lib/jquery-2.1.3.min.js}"></script>
+        <script th:src="@{/js/jquery.mousewheel.min.js}"></script>
+        <script th:src="@{/js/jquery.cookie.min.js}"></script>
+        <script th:src="@{/js/fastclick.min.js}"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/clearmin.min.js}"></script>
+
+        <script>
+            $(function(){
+
+            });
+
+        </script>
+    </body>
+</html>

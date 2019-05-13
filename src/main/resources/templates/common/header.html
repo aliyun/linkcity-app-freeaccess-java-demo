@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+    <body class="cm-no-transition cm-1-navbar">
+        <header id="cm-header" th:fragment="header">
+            <nav class="cm-navbar cm-navbar-primary">
+                <div class="btn btn-primary md-menu-white hidden-md hidden-lg" data-toggle="cm-menu"></div>
+                <div class="cm-flex">
+                    <h1>Home</h1>
+                    <form id="cm-search" action="index.html" method="get">
+                        <input type="search" name="q" autocomplete="off" placeholder="Search..."/>
+                    </form>
+                </div>
+                <div class="pull-right">
+                    <div id="cm-search-btn" class="btn btn-primary md-search-white" data-toggle="cm-search"></div>
+                </div>
+                <div class="dropdown pull-right">
+                    <button class="btn btn-primary md-account-circle-white" data-toggle="dropdown"></button>
+                    <ul class="dropdown-menu">
+                        <li class="disabled text-center">
+                            <a style="cursor:default;">
+                                <th:block shiro:user="">
+                                    <strong><shiro:principal/></strong>
+                                </th:block>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <!--<li>
+                            <a href="#"><i class="fa fa-fw fa-cog"></i>设置</a>
+                        </li>-->
+                        <li>
+                            <th:block shiro:user="">
+                                <a href="/logout"><i class="fa fa-fw fa-sign-out"></i>退出</a>
+                            </th:block>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </header>
+    </body>
+</html>

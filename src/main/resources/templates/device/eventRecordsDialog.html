@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+    <body class="cm-no-transition cm-1-navbar">
+        <div id="eventRecordsDialog" th:fragment="eventRecordsDialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 800px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h4 class="modal-title" id="myModalLabel">
+                            事件历史记录
+                            <a class="anchorjs-link" href="#myModalLabel"><span class="anchorjs-icon"></span></a>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-horizontal">
+                            <div class="form-group" id="queryCriteria">
+                                <input type="hidden" id="eventCode">
+                                <label class="col-sm-1 control-label">类型</label>
+                                <div class="col-sm-2">
+                                    <select class="form-control" id="eventType">
+                                        <option value="info">信息</option>
+                                        <option value="alert">告警</option>
+                                        <option value="error">故障</option>
+                                    </select>
+                                </div>
+
+                                <label class="col-sm-1 control-label">时间</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control date" name="start" id="start">
+                                </div>
+                                <div class="col-sm-1" style="width: 30px;">
+                                    <span>~</span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <input type="text" class="form-control date" name="end" id="end">
+                                </div>
+                                <div class="col-sm-1">
+                                    <button type="button" onclick="search2()" class="btn btn-primary">查询</button>
+                                </div>
+                            </div>
+                        </form>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>事件名称</th>
+                                    <th>事件类型</th>
+                                    <th>发生时间</th>
+                                    <th>内容</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="button" id="confirmEdit" class="btn btn-primary">确定</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    </body>
+</html>

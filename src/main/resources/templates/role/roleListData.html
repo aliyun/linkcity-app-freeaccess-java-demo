@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+    <body class="cm-no-transition cm-2-navbar">
+        <table class="table table-bordered table-hover">
+            <tbody>
+                <tr th:each="role:${roles}">
+                    <td th:text="${role.name}"></td>
+                    <td th:text="${role.code}"></td>
+                    <td th:text="${#dates.format(role.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(role.lastupdate, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td>
+                        <button type="button" th:onclick="'javascript:updateRole(\'' + ${role.rid} + '\');'" class="btn btn-default">更新</button>
+                        <button type="button" th:onclick="'javascript:deleteRole(\'' + ${role.rid} + '\');'" class="btn btn-primary">删除</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>

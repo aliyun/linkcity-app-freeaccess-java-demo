@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap-clearmin.min.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/roboto.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/material-design.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/small-n-flat.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/c3.min.css}">
+        <title>Clearmin template</title>
+    </head>
+    <body class="cm-no-transition cm-2-navbar">
+        <!-- 菜单 -->
+        <div th:replace="common/menu :: menu"></div>
+        <header th:replace="common/header :: header"></header>
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">设备统计信息</div>
+                            <div class="panel-body">
+                                <form class="form-horizontal">
+                                    <div class="form-group">
+                                        <label for="productKey" class="col-sm-2 control-label">ProductKey</label>
+                                        <div class="col-sm-5">
+                                            <input type="text" class="form-control" id="productKey" placeholder="productKey" value="a10pQaQG9RC">
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <button type="button" id="confirm" class="btn btn-primary">确定</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">在线</div>
+                            <div class="panel-body">
+                                <a href="javascript:void(0);" onclick="toList(1)"><div id="d1-c1" style="height:150px"></div></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">离线</div>
+                            <div class="panel-body">
+                                <a href="javascript:void(0);" onclick="toList(3)"><div id="d1-c2" style="height:150px"></div></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">未激活</div>
+                            <div class="panel-body">
+                                <a href="javascript:void(0);" onclick="toList(0)"><div id="d1-c3" style="height:150px"></div></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="common/footer :: footer"></footer>
+        </div>
+        <script th:src="@{/js/lib/jquery-2.1.3.min.js}"></script>
+        <script th:src="@{/js/jquery.mousewheel.min.js}"></script>
+        <script th:src="@{/js/jquery.cookie.min.js}"></script>
+        <script th:src="@{/js/fastclick.min.js}"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/clearmin.min.js}"></script>
+        <script th:src="@{/js/lib/d3.min.js}"></script>
+        <script th:src="@{/js/lib/c3.min.js}"></script>
+
+        <script>
+            $(function(){
+                this.makeGauge = function(selector, value, color) {
+                    c3.generate({
+                        bindto: selector,
+                        data: {
+                            columns: [
+                                ['data', value]
+                            ],
+                            type: 'gauge'
+                        },
+                        tooltip: {
+                            show: false
+                        },
+                        gauge: {
+                            label: {
+                                format: function(value, ratio) {
+                                    return value + '%';
+                                },
+                                show: false
+                            },
+                            min: 0,
+                            max: 100,
+                            units: ' %',
+                            width: 50
+                        },
+                        color: {
+                            pattern: [color, color, color], // the 3 color levels for the percentage values.
+                        }
+                    });
+                };
+
+                var makeGauge = this.makeGauge;
+
+                $("#confirm").click(function () {
+                    var productKey = $("#productKey").val();
+
+                    $.ajax({
+                        type: "GET",
+                        url: "/device/statistic",
+                        dataType: "json",
+                        data: {
+                            "productKey": productKey
+                        },
+                        success: function(data) {
+                            var onlineCount = data['onlineCount'];
+                            var offlineCount = data['offlineCount'];
+                            var unActiveCount = data['unActiveCount'];
+
+                            var total = onlineCount + offlineCount + unActiveCount;
+                            var onlinePercent = (onlineCount / total).toFixed(2);
+                            var offlinePercent = (offlineCount / total).toFixed(2);
+                            var unActivePercent = (1 - onlinePercent - offlinePercent).toFixed(2);
+                            makeGauge('#d1-c1', onlinePercent * 100, '#1abc9c');
+                            makeGauge('#d1-c2', offlinePercent * 100, '#3498db');
+                            makeGauge('#d1-c3', unActivePercent * 100, '#f39c12');
+                        },
+                        error: function () {
+                            alert("加载失败");
+                        }
+                    });
+                });
+            });
+            
+            function toList(status) {
+                var productKey = $("#productKey").val();
+                window.location.href = "/device/list/" + productKey + "/" + status;
+            }
+        </script>
+    </body>
+</html>

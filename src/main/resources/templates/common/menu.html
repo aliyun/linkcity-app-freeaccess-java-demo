@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+    <body class="cm-no-transition cm-1-navbar">
+        <div id="cm-menu" th:fragment="menu">
+            <nav class="cm-navbar cm-navbar-primary">
+                <div class="cm-flex"><a href="index.html" class="cm-logo"></a></div>
+                <div class="btn btn-primary md-menu-white" data-toggle="cm-menu"></div>
+            </nav>
+            <div id="cm-menu-content">
+                <div id="cm-menu-items-wrapper">
+                    <div id="cm-menu-scroller">
+                        <ul class="cm-menu-items">
+                            <th:block shiro:hasAnyRoles="SUPER_ADMIN,ADMIN">
+                                <li class="active"><a href="index.html" class="sf-house">Home</a></li>
+                            </th:block>
+                            <th:block shiro:hasAnyRoles="SUPER_ADMIN,ADMIN,ZZGLY">
+                                <li class="cm-submenu">
+                                    <a class="sf-window-layout">组织管理<span class="caret"></span></a>
+                                    <ul>
+                                        <li><a href="/user/list">用户管理</a></li>
+                                        <li><a href="/role/list">角色管理</a></li>
+                                    </ul>
+                                </li>
+                            </th:block>
+                            <th:block shiro:hasAnyRoles="SUPER_ADMIN,ADMIN,SBGLY">
+                                <li><a href="/device/overview" class="sf-notepad">设备信息</a></li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

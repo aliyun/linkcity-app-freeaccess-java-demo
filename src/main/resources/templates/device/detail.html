@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" >
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap-clearmin.min.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/roboto.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/material-design.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/small-n-flat.css}">
+        <link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}">
+        <title>Clearmin template</title>
+    </head>
+    <body class="cm-no-transition cm-2-navbar">
+        <!-- 菜单 -->
+        <div th:replace="common/menu :: menu"></div>
+        <header th:replace="common/header :: header"></header>
+        <div id="global">
+            <div class="container-fluid">
+                <div class="row cm-fix-height">
+                    <div class="col-sm-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">通用信息</div>
+                            <div class="panel-body">
+                                <div class="col-sm-3">
+                                    <strong>客户端IP：</strong></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>子设备数量：</strong><span th:text="${deviceInfo.subDeviceCount}"></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>激活时间：</strong><span th:text="${#dates.format(deviceInfo.activeTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                </div>
+                                <div class="col-sm-3">
+                                    <strong>最近在线时间：</strong><span th:text="${#dates.format(deviceInfo.latestOnlineTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row cm-fix-height">
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">产品信息</div>
+                            <div class="panel-body">
+                                <div class="col-sm-12">
+                                    <div class="row cm-fix-height">
+                                        <strong>产品名称：</strong><span th:text="${deviceInfo.productDTO.name}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>产品描述：</strong><span th:text="${deviceInfo.productDTO.description}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>创建时间：</strong><span th:text="${#dates.format(deviceInfo.productDTO.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>修改时间：</strong><span th:text="${#dates.format(deviceInfo.productDTO.gmtModified, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>productKey：</strong><span th:text="${deviceInfo.productDTO.productKey}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>节点类型：</strong><span th:text="${deviceInfo.productDTO.nodeType == 0 ? '设备' : '网关'}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">设备信息</div>
+                            <div class="panel-body">
+                                <div class="col-sm-12">
+                                    <div class="row cm-fix-height">
+                                        <strong>设备名称：</strong><span th:text="${deviceInfo.deviceDTO.name}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>状态：</strong>
+                                        <th:block th:switch="${deviceInfo.deviceDTO.status}">
+                                            <span th:case="1">在线</span>
+                                            <span th:case="3">离线</span>
+                                            <span th:case="0">未激活</span>
+                                        </th:block>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>设备类型：</strong><span th:text="${deviceInfo.deviceDTO.thingType == 'DEVICE' ? '设备' : '网关'}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>创建时间：</strong><span th:text="${#dates.format(deviceInfo.deviceDTO.gmtCreate, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>激活时间：</strong><span th:text="${#dates.format(deviceInfo.deviceDTO.activeTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>修改时间：</strong><span th:text="${#dates.format(deviceInfo.deviceDTO.gmtModified, 'yyyy-MM-dd HH:mm:ss')}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>deviceKey：</strong><span th:text="${deviceInfo.deviceDTO.deviceKey}"></span>
+                                    </div>
+                                    <br>
+                                    <div class="row cm-fix-height">
+                                        <strong>deviceSecret：</strong><span th:text="${deviceInfo.deviceDTO.deviceSecret}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer th:replace="common/footer :: footer"></footer>
+        </div>
+        <script th:src="@{/js/lib/jquery-2.1.3.min.js}"></script>
+        <script th:src="@{/js/jquery.mousewheel.min.js}"></script>
+        <script th:src="@{/js/jquery.cookie.min.js}"></script>
+        <script th:src="@{/js/fastclick.min.js}"></script>
+        <script th:src="@{/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/clearmin.min.js}"></script>
+    </body>
+</html>
